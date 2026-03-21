@@ -105,16 +105,35 @@ const SOFTENERS = ['might', 'may', 'could', 'in some cases', 'for our use case',
 
 const clamp = (value: number) => Math.max(0, Math.min(100, Math.round(value)));
 
+const TOKEN_BOUNDARY = String.raw`(?<![a-z0-9])`;
+const TOKEN_BOUNDARY_END = String.raw`(?![a-z0-9])`;
+const METRIC_NUMBER_PATTERN = /(?:(?<=\b(?:by|from|to|at|over|under|up|down|vs|versus|within|in)\s)|(?<=[=~<>$€£¥#:+-]))\d+(?:[.,]\d+)?%?|\d+(?:[.,]\d+)?(?:%|ms|s|sec|secs|seconds|m|min|mins|minutes|h|hr|hrs|hours|x|k|m|b)\b|\$\d+(?:[.,]\d+)?(?:k|m|b)?\b/gi;
+
 export function countPhraseMatches(text: string, phrases: string[]): number {
   const normalized = text.toLowerCase();
   return phrases.reduce((total, phrase) => {
-    const matches = normalized.match(new RegExp(escapeRegExp(phrase), 'g'));
+    const escaped = escapeRegExp(phrase.toLowerCase());
+    const pattern = phrase.includes(' ') || /[^a-z0-9]/i.test(phrase)
+      ? escaped
+      : `${TOKEN_BOUNDARY}${escaped}${TOKEN_BOUNDARY_END}`;
+    const matches = normalized.match(new RegExp(pattern, 'g'));
     return total + (matches?.length ?? 0);
   }, 0);
 }
 
 export function containsNumber(text: string): boolean {
-  return /\b\d+(?:\.\d+)?%?\b/.test(text);
+  return Array.from(text.matchAll(METRIC_NUMBER_PATTERN)).some((match) => {
+    const value = match[0];
+    const start = match.index ?? 0;
+    const nextChar = text[start + value.length] ?? '';
+    const prevChar = text[start - 1] ?? '';
+
+    if ((prevChar === '' || /\s/.test(prevChar)) && /^[#]?\d+$/.test(value) && nextChar === '.') {
+      return false;
+    }
+
+    return true;
+  });
 }
 
 function escapeRegExp(value: string): string {
