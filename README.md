@@ -41,7 +41,7 @@ In Vercel project settings, make sure the production branch is set to `main`.
 
 Set these variables in Vercel (or your local `.env.local`) for persistent share links:
 
-- `NEXT_PUBLIC_APP_URL` (example: `https://hypometer.app`)
+- `NEXT_PUBLIC_APP_URL` (example: `https://hypeometer.vercel.app/`)
 - `UPSTASH_REDIS_REST_URL` (from Upstash Redis)
 - `UPSTASH_REDIS_REST_TOKEN` (from Upstash Redis)
 - `SHARE_RESULT_TTL_SECONDS` (optional, defaults to 30 days)

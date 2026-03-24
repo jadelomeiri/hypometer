@@ -19,7 +19,7 @@ export const APP_CONFIG = {
     websiteUrl: 'https://www.jadelomeiri.com/',
     githubUrl: 'https://github.com/jadelomeiri',
   },
-  repoUrl: 'https://github.com/jadelomeiri/hypometer',
+  repoUrl: 'https://github.com/jadelomeiri/hypeometer',
   share: {
     ttlSeconds: parsePositiveInt(process.env.SHARE_RESULT_TTL_SECONDS, DEFAULT_SHARE_TTL_SECONDS),
     defaultCopy: 'Ran an AI post through {appName}. Hype: {hype}, Substance: {substance}. Verdict: {verdict}. {url} via {appName} by {founderName}',
